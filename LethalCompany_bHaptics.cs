@@ -63,7 +63,7 @@ namespace LethalCompany_bHaptics
         [HarmonyPostfix]
         public static void Postfix(GameNetcodeStuff.PlayerControllerB __instance)
         {
-            if (!__instance.IsOwner || __instance.isPlayerDead || !__instance.AllowPlayerDeath())
+            if (!__instance.IsOwner)
                 return;
             Plugin.tactsuitVr.PlaybackHaptics("Death");
             Plugin.tactsuitVr.StopThreads();
@@ -76,17 +76,22 @@ namespace LethalCompany_bHaptics
         [HarmonyPrefix]
         public static void Prefix(GameNetcodeStuff.PlayerControllerB __instance)
         {
+            if (!__instance.IsOwner || __instance.isPlayerDead)
+                return;
             Plugin.playerHealthPreUpdate = __instance.health;
         }
         [HarmonyPostfix]
         public static void Postfix(GameNetcodeStuff.PlayerControllerB __instance)
         {
+            if (!__instance.IsOwner || __instance.isPlayerDead)
+                return;
             int newHealth = __instance.health;
             if (newHealth - Plugin.playerHealthPreUpdate > 0 && newHealth % 5 == 0)
             {
                 Plugin.tactsuitVr.PlaybackHaptics("Heal");
             }
-            if (newHealth > 20)
+            Plugin.Log.LogMessage("newHealth " + Plugin.playerHealthPreUpdate + " " + newHealth);
+            if (newHealth >= 20)
             {
                 Plugin.tactsuitVr.StopHeartBeat();
             }
@@ -115,6 +120,8 @@ namespace LethalCompany_bHaptics
         [HarmonyPostfix]
         public static void Postfix(GameNetcodeStuff.PlayerControllerB __instance)
         {
+            if (!__instance.IsOwner || __instance.isPlayerDead)
+                return;
             Plugin.tactsuitVr.PlaybackHaptics("LandAfterJump");
         }
     }

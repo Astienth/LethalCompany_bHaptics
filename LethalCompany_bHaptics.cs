@@ -52,6 +52,7 @@ namespace LethalCompany_bHaptics
             if (!__instance.IsOwner || __instance.isPlayerDead || !__instance.AllowPlayerDeath())
                 return;
             Plugin.tactsuitVr.PlaybackHaptics("Impact");
+            Plugin.tactsuitVr.PlaybackHaptics("ImpactRear");
             Plugin.tactsuitVr.PlaybackHaptics("ShotVisor");
         }
     }

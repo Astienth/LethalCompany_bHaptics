@@ -3,6 +3,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using MyBhapticsTactsuit;
 using System.Threading;
+using UnityEngine;
 
 namespace LethalCompany_bHaptics
 {
@@ -14,6 +15,8 @@ namespace LethalCompany_bHaptics
 #pragma warning restore CS0109
         public static TactsuitVR tactsuitVr;
         public delegate void MyMethod();
+        public static int playerHealthPreUpdate;
+        public static bool jumped = false;
 
         private void Awake()
         {
@@ -39,16 +42,79 @@ namespace LethalCompany_bHaptics
             thread.Start();
         }
     }
-    /*
-    [HarmonyPatch(typeof(PlayerController), "Die")]
-    public class bhaptics_OnDeath
+    
+    [HarmonyPatch(typeof(GameNetcodeStuff.PlayerControllerB), "DamagePlayer")]
+    public class bhaptics_DamagePlayer
     {
         [HarmonyPostfix]
-        public static void Postfix(PlayerController __instance)
+        public static void Postfix(GameNetcodeStuff.PlayerControllerB __instance)
         {
+            if (!__instance.IsOwner || __instance.isPlayerDead || !__instance.AllowPlayerDeath())
+                return;
+            Plugin.tactsuitVr.PlaybackHaptics("Impact");
+            Plugin.tactsuitVr.PlaybackHaptics("ShotVisor");
+        }
+    }
+
+    [HarmonyPatch(typeof(GameNetcodeStuff.PlayerControllerB), "KillPlayer")]
+    public class bhaptics_KillPlayer
+    {
+        [HarmonyPostfix]
+        public static void Postfix(GameNetcodeStuff.PlayerControllerB __instance)
+        {
+            if (!__instance.IsOwner || __instance.isPlayerDead || !__instance.AllowPlayerDeath())
+                return;
             Plugin.tactsuitVr.PlaybackHaptics("Death");
             Plugin.tactsuitVr.StopThreads();
         }
     }
-    */
+
+    [HarmonyPatch(typeof(GameNetcodeStuff.PlayerControllerB), "LateUpdate")]
+    public class bhaptics_LateUpdate
+    {
+        [HarmonyPrefix]
+        public static void Prefix(GameNetcodeStuff.PlayerControllerB __instance)
+        {
+            Plugin.playerHealthPreUpdate = __instance.health;
+        }
+        [HarmonyPostfix]
+        public static void Postfix(GameNetcodeStuff.PlayerControllerB __instance)
+        {
+            int newHealth = __instance.health;
+            if (newHealth - Plugin.playerHealthPreUpdate > 0 && newHealth % 5 == 0)
+            {
+                Plugin.tactsuitVr.PlaybackHaptics("Heal");
+            }
+            if (newHealth > 20)
+            {
+                Plugin.tactsuitVr.StopHeartBeat();
+            }
+            else
+            {
+                Plugin.tactsuitVr.StartHeartBeat();
+            }
+            if (Traverse.Create(__instance).Field("isJumping").GetValue<bool>())
+            {
+                if(!Plugin.jumped)
+                {
+                    Plugin.jumped = true;
+                    Plugin.tactsuitVr.PlaybackHaptics("OnJump");
+                }
+            }
+            else
+            {
+                Plugin.jumped = false;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(GameNetcodeStuff.PlayerControllerB), "PlayerHitGroundEffects")]
+    public class bhaptics_PlayerHitGroundEffects
+    {
+        [HarmonyPostfix]
+        public static void Postfix(GameNetcodeStuff.PlayerControllerB __instance)
+        {
+            Plugin.tactsuitVr.PlaybackHaptics("LandAfterJump");
+        }
+    }
 }

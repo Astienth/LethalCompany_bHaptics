@@ -16,6 +16,7 @@ namespace MyBhapticsTactsuit
         // Event to start and stop the heartbeat thread
         private static ManualResetEvent HeartBeat_mrse = new ManualResetEvent(false);
         private static ManualResetEvent Rumble_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent Jetpack_mrse = new ManualResetEvent(false);
         // dictionary of all feedback patterns found in the bHaptics directory
         public Dictionary<String, FileInfo> FeedbackMap = new Dictionary<String, FileInfo>();
 
@@ -55,6 +56,16 @@ namespace MyBhapticsTactsuit
                 PlaybackHaptics("Rumble_Left_Arms", true, rumbleIntensity);
                 PlaybackHaptics("Rumble_Right_Arms", true, rumbleIntensity);
                 PlaybackHaptics("Rumble_Vest", true, rumbleIntensity);
+                Thread.Sleep(1000);
+            }
+        }
+        public void JetpackFunc()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                Jetpack_mrse.WaitOne();
+                PlaybackHaptics("ImpactRear", true, 0.5f);
                 Thread.Sleep(1000);
             }
         }
@@ -117,6 +128,8 @@ namespace MyBhapticsTactsuit
             HeartBeatThread.Start();
             Thread RumbleThread = new Thread(RumbleFunc);
             RumbleThread.Start();
+            Thread JetpackThread = new Thread(JetpackFunc);
+            JetpackThread.Start();
         }
 
         public void LOG(string logStr)
@@ -210,6 +223,16 @@ namespace MyBhapticsTactsuit
             Rumble_mrse.Reset();
         }
 
+        public void StartJetPack()
+        {
+            Jetpack_mrse.Set();
+        }
+
+        public void StopJetPack()
+        {
+            Jetpack_mrse.Reset();
+        }
+
         public void StopHapticFeedback(String effect)
         {
             hapticPlayer.TurnOff(effect);
@@ -228,6 +251,7 @@ namespace MyBhapticsTactsuit
         {
             StopHeartBeat();
             StopRumble();
+            StopJetPack();
         }
 
 

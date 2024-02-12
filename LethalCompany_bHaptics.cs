@@ -125,4 +125,50 @@ namespace LethalCompany_bHaptics
             Plugin.tactsuitVr.PlaybackHaptics("LandAfterJump");
         }
     }
+
+    [HarmonyPatch(typeof(ShotgunItem), "ShootGunAndSync")]
+    public class bhaptics_ReviveDeadPlayers
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ShotgunItem __instance, bool heldByPlayer)
+        {
+            if (!heldByPlayer)
+                return;
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+        }
+    }
+
+    [HarmonyPatch(typeof(SprayPaintItem), "TrySpraying")]
+    public class bhaptics_TrySpraying
+    {
+        [HarmonyPostfix]
+        public static void Postfix(SprayPaintItem __instance)
+        {
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+        }
+    }
+
+
+    [HarmonyPatch(typeof(JetpackItem), "ActivateJetpack")]
+    public class bhaptics_ActivateJetpack
+    {
+        [HarmonyPostfix]
+        public static void Postfix(JetpackItem __instance)
+        {
+            Plugin.tactsuitVr.StartJetPack();
+        }
+    }
+
+
+    [HarmonyPatch(typeof(SprayPaintItem), "DeactivateJetpack")]
+    public class bhaptics_DeactivateJetpack
+    {
+        [HarmonyPostfix]
+        public static void Postfix(JetpackItem __instance)
+        {
+            Plugin.tactsuitVr.StopJetPack();
+        }
+    }
 }

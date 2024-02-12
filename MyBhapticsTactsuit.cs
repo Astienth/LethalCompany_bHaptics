@@ -26,7 +26,6 @@ namespace MyBhapticsTactsuit
 
         private static RotationOption defaultRotationOption = new RotationOption(0.0f, 0.0f);
 
-        public string heartBeatEffect = "HeartBeat";
         public float rumbleIntensity = 1.0f;
         public int heartbeatCount = 0;
         public int maxHeartBeat = 15;
@@ -37,7 +36,7 @@ namespace MyBhapticsTactsuit
             {
                 // Check if reset event is active
                 HeartBeat_mrse.WaitOne();
-                PlaybackHaptics(heartBeatEffect);
+                PlaybackHaptics("HeartBeat");
                 if (heartbeatCount > maxHeartBeat)
                 {
                     StopHeartBeat();
@@ -202,7 +201,6 @@ namespace MyBhapticsTactsuit
 
         public void StartHeartBeat(bool fast = false)
         {
-            heartBeatEffect = (fast) ? "HeartBeatFast" : "HeartBeat";
             HeartBeat_mrse.Set();
         }
 

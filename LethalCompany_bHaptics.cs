@@ -145,8 +145,8 @@ namespace LethalCompany_bHaptics
         [HarmonyPostfix]
         public static void Postfix(SprayPaintItem __instance)
         {
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R", true, 0.5f);
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R", true, 0.5f);
         }
     }
 
@@ -169,6 +169,21 @@ namespace LethalCompany_bHaptics
         public static void Postfix(JetpackItem __instance)
         {
             Plugin.tactsuitVr.StopJetPack();
+        }
+    }
+
+    [HarmonyPatch(typeof(GameNetcodeStuff.PlayerControllerB), "TeleportPlayer")]
+    public class bhaptics_TeleportPlayer
+    {
+        [HarmonyPostfix]
+        public static void Postfix(GameNetcodeStuff.PlayerControllerB __instance)
+        {
+            if (!__instance.IsOwner || __instance.isPlayerDead)
+                return;
+            Plugin.tactsuitVr.PlaybackHaptics("Rumble_Head");
+            Plugin.tactsuitVr.PlaybackHaptics("Rumble_Left_Arms");
+            Plugin.tactsuitVr.PlaybackHaptics("Rumble_Right_Arms");
+            Plugin.tactsuitVr.PlaybackHaptics("Rumble_Vest");
         }
     }
 }

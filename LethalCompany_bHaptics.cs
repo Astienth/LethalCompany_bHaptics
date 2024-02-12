@@ -186,4 +186,19 @@ namespace LethalCompany_bHaptics
             Plugin.tactsuitVr.PlaybackHaptics("Rumble_Vest");
         }
     }
+
+    [HarmonyPatch(typeof(Shovel), "HitShovel")]
+    public class bhaptics_Shovel
+    {
+        [HarmonyPostfix]
+        public static void Postfix(Shovel __instance)
+        {
+            if (!__instance.playerHeldBy.IsOwner || __instance.playerHeldBy.isPlayerDead)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+        }
+    }
 }

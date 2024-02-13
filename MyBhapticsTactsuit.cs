@@ -69,46 +69,6 @@ namespace MyBhapticsTactsuit
             }
         }
 
-        public void PlayJumpScareLight()
-        {
-            PlaybackHaptics("JumpScareLight_Vest");
-            PlaybackHaptics("JumpScare_Left_Arms", true, 0.4f);
-            PlaybackHaptics("JumpScare_Right_Arms", true, 0.4f);
-            PlaybackHaptics("ShotVisor", true, 0.4f);
-        }
-        public void PlayJumpScareStrong()
-        {
-            PlaybackHaptics("JumpScare_Vest");
-            PlaybackHaptics("JumpScare_Left_Arms");
-            PlaybackHaptics("JumpScare_Right_Arms");
-            PlaybackHaptics("ShotVisor");
-            PlayHapticsWithDelay("HeartBeatFast", 400);
-            PlayHapticsWithDelay("HeartBeatFast", 1400);
-        }
-
-        public void RumbleOnce(float rumbleIntensity = 1.0f, bool withDelay = false, int delay = 0)
-        {
-            if (withDelay)
-            {
-                Thread thread = new Thread(() =>
-                {
-                    Thread.Sleep(delay);
-                    PlaybackHaptics("Rumble_Head", true, rumbleIntensity);
-                    PlaybackHaptics("Rumble_Left_Arms", true, rumbleIntensity);
-                    PlaybackHaptics("Rumble_Right_Arms", true, rumbleIntensity);
-                    PlaybackHaptics("Rumble_Vest", true, rumbleIntensity);
-                });
-                thread.Start();
-            }
-            else
-            {
-                PlaybackHaptics("Rumble_Head", true, rumbleIntensity);
-                PlaybackHaptics("Rumble_Left_Arms", true, rumbleIntensity);
-                PlaybackHaptics("Rumble_Right_Arms", true, rumbleIntensity);
-                PlaybackHaptics("Rumble_Vest", true, rumbleIntensity);
-            }
-        }
-
         public TactsuitVR()
         {
 

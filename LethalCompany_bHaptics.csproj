@@ -49,7 +49,7 @@
     </Reference>
     <Reference Include="Bhaptics.Tact">
       <HintPath>..\..\..\..\GAMES\Lethal Company\BepInEx\plugins\bHaptics\Bhaptics.Tact.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

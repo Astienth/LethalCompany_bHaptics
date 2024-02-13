@@ -90,7 +90,7 @@ namespace LethalCompany_bHaptics
             {
                 Plugin.tactsuitVr.PlaybackHaptics("Heal");
             }
-            Plugin.Log.LogMessage("newHealth " + Plugin.playerHealthPreUpdate + " " + newHealth);
+
             if (newHealth >= 20)
             {
                 Plugin.tactsuitVr.StopHeartBeat();
@@ -157,6 +157,10 @@ namespace LethalCompany_bHaptics
         [HarmonyPostfix]
         public static void Postfix(JetpackItem __instance)
         {
+            if (!__instance.playerHeldBy.IsOwner || __instance.playerHeldBy.isPlayerDead)
+            {
+                return;
+            }
             Plugin.tactsuitVr.StartJetPack();
         }
     }
@@ -168,6 +172,10 @@ namespace LethalCompany_bHaptics
         [HarmonyPostfix]
         public static void Postfix(JetpackItem __instance)
         {
+            if (!__instance.playerHeldBy.IsOwner || __instance.playerHeldBy.isPlayerDead)
+            {
+                return;
+            }
             Plugin.tactsuitVr.StopJetPack();
         }
     }
